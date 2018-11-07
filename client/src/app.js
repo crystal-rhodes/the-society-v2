@@ -5,6 +5,9 @@ import configureStore from './store/configureStore';
 import 'normalize.css/normalize.css';
 import './styles/main.scss';
 import 'react-dates/lib/css/_datepicker.css';
+import client from './apollo/config';
+import { ApolloProvider } from 'react-apollo';
+import Homepage from './components/Homepage'
 
 // const store = configureStore();
 // const jsx = (
@@ -12,5 +15,11 @@ import 'react-dates/lib/css/_datepicker.css';
 //   </Provider>
 // );
 
-ReactDOM.render(<p>Loading...</p>, document.getElementById('app'));
 
+
+ReactDOM.render(
+  <ApolloProvider client={client}>
+    <Homepage />
+  </ApolloProvider>,
+  document.getElementById('app'),
+);
