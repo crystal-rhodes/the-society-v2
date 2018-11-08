@@ -5,7 +5,9 @@ import {
 import {
     gql
 } from 'apollo-boost'
-import client from '../apollo/config'
+import Client from '../apollo/config'
+import Header from './Header';
+import RegisterForm from './RegisterForm'
 
 const getUsers = gql `
     query {
@@ -16,18 +18,14 @@ const getUsers = gql `
     }
 `
 
-client.query({
+Client.query({
     query: getUsers
 }).then(res => console.log(res));
 
 const Homepage = () => (
     <div>
-    <div>
-        <h1 className="header-main">The Society Network</h1>
-    </div>
-    <div>
-      
-    </div>
+        <Header />
+        <RegisterForm />
   </div>
 )
 

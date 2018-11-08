@@ -1,7 +1,12 @@
 // -----------------------------------------------------------------------------
 // This file contains all styles related to the header of the site/application.
 // -----------------------------------------------------------------------------
-.header-main {
-    font-family: $text-font-stack;
-    font-weight: 800;
+
+.header {
+    background: $dark-grey;
+    
+    &-title {
+        font-family: $text-font-stack;
+        font-weight: 900;
+    }
 }
