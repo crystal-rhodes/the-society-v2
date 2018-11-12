@@ -8,7 +8,19 @@
     "heroku-postbuild": "babel src --out-dir dist --copy-files",
     "dev": "env-cmd ./config/dev.env nodemon src/index.js --ext js,graphql --exec babel-node",
     "test": "env-cmd ./config/test.env jest --watch --runInBand",
-    "get-schema": "graphql get-schema -p prisma --dotenv config/dev.env"
+    "get-schema": "graphql get-schema -p prisma --dotenv config/dev.env",
+
+    "token:dev": "prisma token -e ./config/dev.env",
+    "token:test": "prisma token -e ./config/test.env",
+    "token:prod": "prisma token -e ./config/prod.env",
+
+    "deploy:dev": "prisma deploy -e ./config/dev.env",
+    "deploy:test": "prisma deploy -e ./config/test.env",
+    "deploy:prod": "prisma deploy -e ./config/prod.env",
+    
+    "delete:dev": "prisma delete -e ./config/dev.env",
+    "delete:test": "prisma delete -e ./config/test.env",
+    "delete:prod": "prisma delete -e ./config/prod.env"
   },
   "jest": {
     "globalSetup": "./tests/jest/globalSetup.js",

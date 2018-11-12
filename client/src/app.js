@@ -1,25 +1,29 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import {
+    Provider
+} from 'react-redux';
 import configureStore from './store/configureStore';
 import 'normalize.css/normalize.css';
 import './styles/main.scss';
 import 'react-dates/lib/css/_datepicker.css';
 import client from './apollo/config';
-import { ApolloProvider } from 'react-apollo';
+import {
+    ApolloProvider
+} from 'react-apollo';
 import Homepage from './components/Homepage'
+import AppRouter from './routers/AppRouter'
 
-// const store = configureStore();
-// const jsx = (
-//   <Provider store={store}>
-//   </Provider>
-// );
+const store = configureStore();
 
 
 
 ReactDOM.render(
-  <ApolloProvider client={client}>
-    <Homepage />
+    <ApolloProvider client={client} >
+      <Provider store={store}>
+  <AppRouter/>
+  </Provider>
+  
   </ApolloProvider>,
-  document.getElementById('app'),
+    document.getElementById('app'),
 );

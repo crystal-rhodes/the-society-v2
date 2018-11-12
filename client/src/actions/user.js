@@ -1,7 +1,10 @@
+
+
 export const createUser = (userData) => ({
     type: "CREATE_USER",
     userData
 })
+
 
 export const updateUser = (id, updates) => ({
     type: "UPDATE_USER",

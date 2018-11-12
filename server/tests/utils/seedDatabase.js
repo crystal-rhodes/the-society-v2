@@ -31,7 +31,7 @@ const seedDatabase = async () => {
         data: userOne.input
     })
     userOne.jwt = jwt.sign({ userId: userOne.user.id }, process.env.JWT_SECRET)
-
+    console.log(process.env.JWT_SECRET)
     // Create user two
     userTwo.user = await prisma.mutation.createUser({
         data: userTwo.input

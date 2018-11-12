@@ -7,26 +7,24 @@ import {
 } from 'apollo-boost'
 import Client from '../apollo/config'
 import Header from './Header';
-import RegisterForm from './RegisterForm'
+import CreateUser from './Register/CreateUser'
+import UserList from './UserList'
+import LoginUser from './Login/LoginUser';
+import { AUTH_TOKEN } from '../apollo/constants'
 
-const getUsers = gql `
-    query {
-        users {
-            id
-            name
-        }
+const Homepage = ({isAuthenticated}) => {
+    if (isAuthenticated) {
+        return <div>
+        <UserList/>
+        </div>
     }
-`
-
-Client.query({
-    query: getUsers
-}).then(res => console.log(res));
-
-const Homepage = () => (
-    <div>
-        <Header />
-        <RegisterForm />
-  </div>
-)
+    else {
+        return <div>
+        <UserList/>
+        <LoginUser/>
+        <CreateUser/>
+    </div>
+    }
+}
 
 export default Homepage;
