@@ -4,8 +4,10 @@ import prisma from '../src/prisma'
 import seedDatabase, { userOne } from './utils/seedDatabase'
 import getClient from './utils/getClient'
 import { createUser, getUsers, login, getProfile } from './utils/operations'
-jest.setTimeout(10000)
+ 
 const client = getClient()
+jest.setTimeout(10000)
+
 
 beforeEach(seedDatabase)
 
@@ -14,7 +16,9 @@ test('Should create a new user', async () => {
         data: {
             name: 'Andrew',
             email: 'andrew@example.com',
-            password: 'MyPass123'
+            password: 'MyPass123',
+            birthDate: 0,
+            gender: "male"
         }
     }
     const response = await client.mutate({
@@ -52,14 +56,16 @@ test('Should not signup user with invalid password', async () => {
         data: {
             name: 'Andrew',
             email: 'andrew@example.com',
-            password: 'pass'
+            password: 'pass',
+            birthDate: 0,
+            gender: "male"
         }
     }
 
     await expect(
         client.mutate({ mutation: createUser, variables })
     ).rejects.toThrow()
-})
+}) 
 
 test('Should fetch user profile', async () => {
     const client = getClient(userOne.jwt)

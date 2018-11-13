@@ -25,6 +25,7 @@ class Newsfeed extends Component {
         const { classes } = this.props
 
         return <div>
+        <h1>This is newsfeed</h1>
         <CreatePost/>
         <PostList/>
 

@@ -1,31 +1,37 @@
-import React, { Component } from 'react'
+import React, {
+    Component
+} from 'react'
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { withStyles } from '@material-ui/core/styles';
+import {
+    withStyles
+} from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import { FormControl } from '@material-ui/core';
+import {
+    FormControl
+} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
     container: {
-      display: 'flex',
-      flexWrap: 'wrap',
+        display: 'flex',
+        flexWrap: 'wrap',
     },
     textField: {
-      marginLeft: theme.spacing.unit,
-      marginRight: theme.spacing.unit,
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
     },
     dense: {
-      marginTop: 16,
+        marginTop: 16,
     },
     menu: {
-      width: 200,
+        width: 200,
     },
-  });
+});
 
 class CreatePostForm extends Component {
     constructor(props) {
@@ -62,11 +68,23 @@ class CreatePostForm extends Component {
     onSubmit = (e) => {
         e.preventDefault();
 
+        const {
+            title,
+            body,
+            published
+        } = this.state
 
+        this.props.onSubmit({
+            title,
+            body,
+            published
+        })
     }
 
     render() {
-        const { classes } = this.props
+        const {
+            classes
+        } = this.props
 
         return <FormControl onSubmit={this.onSubmit}>
         <TextField

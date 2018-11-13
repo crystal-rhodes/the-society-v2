@@ -7,7 +7,9 @@ export const getUsers = gql `
             id
             name
             email
-            password
+            gender
+            birthDate
+            createdAt
         }
     }
 `
@@ -18,6 +20,7 @@ export const getMe = gql `
             id
             name
             email
+            gender
             birthDate
         }
     }
@@ -41,6 +44,9 @@ export const getPosts = gql `
         id
         title
         body
+        author {
+            name
+        }
         published
         createdAt
         }

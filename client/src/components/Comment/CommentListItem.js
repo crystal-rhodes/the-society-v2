@@ -1,19 +1,18 @@
 import React, { Component } from 'react'
+import {  OutlinedButton } from '../common/Button';
 
-class CommentListItem extends Component {
-    constructor(props) {
-        super(props)
+const CommentListItem = (props) => {
+    return <div>This is a Comment
+    
+    <OutlinedButton size="medium" color="primary">
+        Edit
+    </OutlinedButton>
+    
+    <OutlinedButton size="medium" color="secondary">
+        Delete
+    </OutlinedButton>
 
-        this.state = {
-            posts: []
-        }
-    }
-
-    render() {
-        return <div>
-
-        </div>
-    }
+    </div>
 }
 
 export default CommentListItem

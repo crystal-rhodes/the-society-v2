@@ -11,11 +11,13 @@ import CreateUser from './Register/CreateUser'
 import UserList from './UserList'
 import LoginUser from './Login/LoginUser';
 import { AUTH_TOKEN } from '../apollo/constants'
+import Newsfeed from './Newsfeed';
 
 const Homepage = ({isAuthenticated}) => {
     if (isAuthenticated) {
         return <div>
         <UserList/>
+        <Newsfeed/>
         </div>
     }
     else {

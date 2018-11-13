@@ -1,24 +1,51 @@
-import React, { Component } from 'react'
+import React, {
+    Component
+} from 'react'
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { withStyles } from '@material-ui/core/styles';
+import {
+    withStyles
+} from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import CreatePostForm from './CreatePostForm';
-// import createPostMutation from ''
+import GET_CURRENT_USER from '../GetCurrentUser'
+import {
+    compose,
+    graphql
+} from 'react-apollo'
+import {
+    getMe
+} from '../../apollo/queries/Query'
+import {
+    createPostMutation
+} from '../../apollo/queries/Mutation'
+import { getPosts } from '../../apollo/queries/Query'
 
 class CreatePost extends Component {
-    constructor(props) {
-        super(props)
+    onSubmit = (user) => {
+        console.log(this.props)
 
-        this.state = {
-            title: '',
-            body: '',
-            published: false,
-        }
-    }
+        const {
+            id
+        } = this.props.data.me
+        const {
+            title,
+            body,
+            published
+        } = user
 
-    onSubmit = (post) => {
+        this.props.mutate({
+            variables: {
+                data: {
+                    title,
+                    body,
+                    published,
+                }
+            },
+            refetchQueries: [{ query: getPosts }]
+        }).then(res => console.log(res))
+
 
     }
 
@@ -27,4 +54,7 @@ class CreatePost extends Component {
     }
 }
 
-export default CreatePost
+export default compose(
+    graphql(getMe),
+    graphql(createPostMutation)
+)(CreatePost)

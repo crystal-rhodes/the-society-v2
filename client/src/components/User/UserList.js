@@ -1,11 +1,11 @@
 import React from 'react'
 import {
     getUsers
-} from '../apollo/queries/Query'
+} from '../../apollo/queries/Query'
 import {
     graphql
 } from 'react-apollo'
-
+import UserListItem from './UserListItem'
 class UserList extends React.Component {
     constructor(props) {
         super(props)
@@ -13,11 +13,8 @@ class UserList extends React.Component {
 
     renderUsers() {
         return (this.props.data.users.map((user) => {
-            return <li key={user.id} className="collection-item">
-            Name: {user.name}<br/>Email: {user.email}<br/>Password: {user.password}
-            
-            </li>
-
+            return <UserListItem key={user.id} user={user}/>
+        
         }))
     }
 

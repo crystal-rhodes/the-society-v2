@@ -24,7 +24,7 @@ export default () => (
       <Header />
       <Switch>
         <PublicRoute path="/" component={HomePage} exact={true} />
-        <PrivateRoute path="/newsfeed" component={Newsfeed} exact={true} />
+
         <PrivateRoute path="/settings" component={Settings} exact={true} />
         <PrivateRoute path="/:name" component={Profile} exact={true} />
         <Route component={NotFoundPage} />

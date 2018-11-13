@@ -12,12 +12,13 @@ import moment from 'moment';
 import {
     Redirect
 } from 'react-router-dom'
+import { getUsers } from '../../apollo/queries/Query';
 
 
 class createUser extends Component {
     onSubmit = (user) => {
         console.log(user)
-
+        
         this.props.mutate({
                 variables: {
                     data: {
@@ -27,7 +28,8 @@ class createUser extends Component {
                         password: user.password,
                         gender: user.gender
                     }
-                },
+                }, 
+                refetchQueries: [{ query: getUsers }]
             }).then((res) => {
                 console.log(res.data)
                 return <Redirect to='/'/>
