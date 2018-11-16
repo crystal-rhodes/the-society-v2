@@ -160,7 +160,7 @@ const Mutation = {
         
         console.log(commentExists)
 
-        if (!commentExists || !isPostOwner) {
+        if (!commentExists && !isPostOwner) {
             throw new Error('Unable to delete comment');
         }
 

@@ -1,6 +1,7 @@
 import {
-  ApolloClient
-} from 'apollo-client';
+  ApolloClient,
+  ApolloLink
+} from 'apollo-boost';
 import {
   createHttpLink
 } from 'apollo-link-http';
@@ -10,10 +11,36 @@ import {
 import {
   InMemoryCache
 } from 'apollo-cache-inmemory';
-import { AUTH_TOKEN } from './constants'
+import {
+  AUTH_TOKEN
+} from './constants'
+import {
+  withClientState
+} from 'apollo-link-state'
+import {
+  WebSocketLink
+} from 'apollo-link-ws'
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:4000/'
+})
+
+const cache = new InMemoryCache();
+
+const defaultState = {
+  currentPostList: []
+}
+
+const stateLink = withClientState({
+  cache,
+  defaults: defaultState,
+  resolvers: {
+      Mutation: {
+        updatePostList: (_, {index, value}, {cache}) => {
+          console.log(index, value)
+        }
+      }
+  }
 })
 
 const authLink = setContext((_, {
@@ -29,6 +56,9 @@ const authLink = setContext((_, {
 });
 
 export default new ApolloClient({
-  link: authLink.concat(httpLink),
-  cache: new InMemoryCache()
+  link: ApolloLink.from([
+    stateLink,
+    authLink.concat(httpLink)
+  ]),
+  cache
 });

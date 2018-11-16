@@ -38,6 +38,7 @@ const styles = theme => ({
     button: {
         margin: theme.spacing.unit,
         width: 200,
+
     },
 });
 
@@ -141,6 +142,17 @@ class RegisterForm extends React.Component {
 
     }
 
+    onClear = () => {
+        this.setState({
+            email: '',
+            firstName: '',
+            lastName: '',
+            password: '',
+            birthDate: 0,
+            gender: '',
+        })
+    }
+
     render() {
         const {
             classes
@@ -205,7 +217,9 @@ class RegisterForm extends React.Component {
         <ContainedButton color="primary" className={classes.button} onClick={this.onSubmit}>
           Sign Up
         </ContainedButton>
-
+        <ContainedButton color="default" className={classes.button} onClick={this.onClear}>
+        Clear
+        </ContainedButton>
       
           </FormControl>)
 

@@ -1,26 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import Switch from '@material-ui/core/Switch';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormGroup from '@material-ui/core/FormGroup';
+import Typography from '@material-ui/core/Typography';
+import InputBase from '@material-ui/core/InputBase';
+import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import { AUTH_TOKEN } from '../apollo/constants'
-import { Link } from 'react-router-dom'
-import { Query } from 'react-apollo';
-import { getMe } from '../apollo/queries/Query'
-import { Redirect } from 'react-router-dom';
+import { fade } from '@material-ui/core/styles/colorManipulator';
+import { withStyles } from '@material-ui/core/styles';
+import MenuIcon from '@material-ui/icons/Menu';
+import SearchIcon from '@material-ui/icons/Search';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import MailIcon from '@material-ui/icons/Mail';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import MoreIcon from '@material-ui/icons/MoreVert';
+import {
+    AUTH_TOKEN
+} from '../apollo/constants'
+import {
+    NavLink
+} from 'react-router-dom'
+import { compose, graphql } from 'react-apollo';
+import {
+    getMe
+} from '../apollo/queries/Query'
 
-const styles = {
+const styles = theme => ({
   root: {
-    flexGrow: 1,
+    width: '100%',
   },
   grow: {
     flexGrow: 1,
@@ -29,109 +38,226 @@ const styles = {
     marginLeft: -12,
     marginRight: 20,
   },
-};
+  title: {
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
+    },
+  },
+  search: {
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    '&:hover': {
+      backgroundColor: fade(theme.palette.common.white, 0.25),
+    },
+    marginRight: theme.spacing.unit * 2,
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing.unit * 3,
+      width: 'auto',
+    },
+  },
+  searchIcon: {
+    width: theme.spacing.unit * 9,
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputRoot: {
+    color: 'inherit',
+    width: '100%',
+  },
+  inputInput: {
+    paddingTop: theme.spacing.unit,
+    paddingRight: theme.spacing.unit,
+    paddingBottom: theme.spacing.unit,
+    paddingLeft: theme.spacing.unit * 10,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: 200,
+    },
+  },
+  sectionDesktop: {
+    display: 'none',
+    [theme.breakpoints.up('md')]: {
+      display: 'flex',
+    },
+  },
+  sectionMobile: {
+    display: 'flex',
+    [theme.breakpoints.up('md')]: {
+      display: 'none',
+    },
+  },
+});
 
-class MenuAppBar extends React.Component {
+class PrimarySearchAppBar extends React.Component {
   state = {
-    auth: !!localStorage.getItem(AUTH_TOKEN),
-    name: '',
     anchorEl: null,
+    mobileMoreAnchorEl: null,
+    auth: !!localStorage.getItem(AUTH_TOKEN),
   };
 
-  handleChange = event => {
-    this.setState({ auth: event.target.checked });
-
-    if (this.state.auth) {
-      // Logout user
-      localStorage.removeItem(AUTH_TOKEN)
-
-      window.location.reload()
-      
-    } else {
-      
-    }
-  };
-
-  handleMenu = event => {
+  handleProfileMenuOpen = event => {
     this.setState({ anchorEl: event.currentTarget });
   };
 
-  handleClose = () => {
+  handleMenuClose = () => {
     this.setState({ anchorEl: null });
+    this.handleMobileMenuClose();
   };
 
-  render() {
-    const { classes } = this.props;
-    const { auth, anchorEl } = this.state;
-    const open = Boolean(anchorEl);
-    const authToken = localStorage.getItem(AUTH_TOKEN)
+  handleMobileMenuOpen = event => {
+    this.setState({ mobileMoreAnchorEl: event.currentTarget });
+  };
 
-    const name = () => <Query query={getMe}>
-    {({loading, error, data}) => {
-      if (loading) return console.log('loading')
-      if (error) console.log('errr')
-    
-      console.log(data)
-    }}
-    </Query>
+  handleMobileMenuClose = () => {
+    this.setState({ mobileMoreAnchorEl: null });
+  };
+
+  onLogout = event => {
+    this.setState({
+        auth: event.target.checked
+    });
+
+    if (this.state.auth) {
+        // Logout user
+        localStorage.removeItem(AUTH_TOKEN)
+
+        window.location.reload()
+
+    } else {
+
+    }
+  };
+
+  getLoggedInAs = () => {
+    if (this.props.data.loading) {
+        return ''
+    } else {
+        return <span>Logged in as <strong>{this.props.data.me.name}</strong></span> 
+    }
+  }
+
+  render() {
+    const { anchorEl, mobileMoreAnchorEl } = this.state;
+    const { classes } = this.props;
+    const isMenuOpen = Boolean(anchorEl);
+    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+    const renderMenu = (
+      <Menu
+        anchorEl={anchorEl}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={isMenuOpen}
+        onClose={this.handleMenuClose}
+      >
+        {this.state.auth === true && <MenuItem onClick={this.handleMenuClose}>{this.getLoggedInAs()}</MenuItem>}
+        <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
+        <NavLink to="/settings"><MenuItem onClick={this.handleMenuClose}>My Account</MenuItem></NavLink>
+        <MenuItem onClick={this.onLogout}>Logout</MenuItem>
+      </Menu>
+    );
+
+    const renderMobileMenu = (
+      <Menu
+        anchorEl={mobileMoreAnchorEl}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={isMobileMenuOpen}
+        onClose={this.handleMobileMenuClose}
+      >
+        <MenuItem>
+          <IconButton color="inherit">
+            <Badge badgeContent={4} color="secondary">
+              <MailIcon />
+            </Badge>
+          </IconButton>
+          <p>Messages</p>
+        </MenuItem>
+        <MenuItem>
+          <IconButton color="inherit">
+            <Badge badgeContent={11} color="secondary">
+              <NotificationsIcon />
+            </Badge>
+          </IconButton>
+          <p>Notifications</p>
+        </MenuItem>
+        <MenuItem onClick={this.handleProfileMenuOpen}>
+          <IconButton color="inherit">
+            <AccountCircle />
+          </IconButton>
+          <p>Profile</p>
+        </MenuItem>
+      </Menu>
+    );
 
     return (
       <div className={classes.root}>
-        <FormGroup>
-          <FormControlLabel
-            control={
-              <Switch checked={auth} onChange={this.handleChange} aria-label="LoginSwitch" />
-            }
-            label={authToken ? `Logged in as ${this.state.name}` : 'Login'}
-          />
-        </FormGroup>
         <AppBar position="static">
           <Toolbar>
-            <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
+            <IconButton className={classes.menuButton} color="inherit" aria-label="Open drawer">
               <MenuIcon />
             </IconButton>
-            <Typography variant="h3" color="inherit" className={classes.grow}>
-              <a href="/">The Society</a>
+            <Typography className={classes.title} variant="h6" color="inherit" noWrap>
+              <NavLink to="/">The Society</NavLink>
             </Typography>
-            {auth && (
-              <div>
-                <IconButton
-                  aria-owns={open ? 'menu-appbar' : undefined}
-                  aria-haspopup="true"
-                  onClick={this.handleMenu}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={open}
-                  onClose={this.handleClose}
-                >
-                  <MenuItem onClick={this.handleClose}>My Profile</MenuItem>
-                  <Link to="/settings"><MenuItem onClick={this.handleClose}>My Account</MenuItem></Link>
-                  <MenuItem onClick={this.handleChange}>Logout</MenuItem>
-                </Menu>
+            <div className={classes.search}>
+              <div className={classes.searchIcon}>
+                <SearchIcon />
               </div>
-            )}
+              <InputBase
+                placeholder="Search…"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                }}
+              />
+            </div>
+            <div className={classes.grow} />
+            <div className={classes.sectionDesktop}>
+              <IconButton color="inherit">
+                <Badge badgeContent={4} color="secondary">
+                  <MailIcon />
+                </Badge>
+              </IconButton>
+              <IconButton color="inherit">
+                <Badge badgeContent={17} color="secondary">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+              <IconButton
+                aria-owns={isMenuOpen ? 'material-appbar' : undefined}
+                aria-haspopup="true"
+                onClick={this.handleProfileMenuOpen}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+            </div>
+            <div className={classes.sectionMobile}>
+              <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
+                <MoreIcon />
+              </IconButton>
+            </div>
           </Toolbar>
         </AppBar>
+        {renderMenu}
+        {renderMobileMenu}
       </div>
     );
   }
 }
 
-MenuAppBar.propTypes = {
+PrimarySearchAppBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(MenuAppBar);
+export default compose(graphql(getMe), withStyles(styles))(PrimarySearchAppBar);

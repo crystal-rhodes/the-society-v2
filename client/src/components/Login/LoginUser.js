@@ -35,6 +35,7 @@ class LoginUser extends Component {
                     window.location.reload()
                 }
             })
+            .catch((err) => console.log(err.message))
     }
 
     _saveUserData = token => {

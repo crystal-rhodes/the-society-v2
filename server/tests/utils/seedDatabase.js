@@ -76,7 +76,7 @@ const seedDatabase = async () => {
     })
     userTwo.jwt = jwt.sign({ userId: userTwo.user.id }, process.env.JWT_SECRET)
 
-    // Create post one
+    // Create post one connected to user One
     postOne.post = await prisma.mutation.createPost({
         data: {
             ...postOne.input,
@@ -88,7 +88,7 @@ const seedDatabase = async () => {
         }
     })
 
-    // Create post two
+    // Create post two connected to user One
     postTwo.post = await prisma.mutation.createPost({
         data: {
             ...postTwo.input,
@@ -100,7 +100,7 @@ const seedDatabase = async () => {
         }
     })
 
-    // Create comment one
+    // Create comment one connected to user Two and post One
     commentOne.comment = await prisma.mutation.createComment({
         data: {
             ...commentOne.input,
@@ -117,7 +117,7 @@ const seedDatabase = async () => {
         }
     })
 
-    // Create comment two
+    // Create comment two connected to user One and post One
     commentTwo.comment = await prisma.mutation.createComment({
         data: {
             ...commentTwo.input,
@@ -133,7 +133,6 @@ const seedDatabase = async () => {
             }
         }
     })
-
 }
 
 export { seedDatabase as default, userOne, userTwo, postOne, postTwo, commentOne, commentTwo }

@@ -6,13 +6,11 @@ import Typography from '@material-ui/core/Typography';
 import {
     withStyles
 } from '@material-ui/core/styles';
+import moment  from 'moment';
 
 const styles = {
     title: {
         fontSize: 14,
-    },
-    pos: {
-        marginBottom: 12,
     },
 };
 
@@ -30,22 +28,24 @@ export default withStyles(styles)((props) => {
         createdAt
     } = props.user
 
+    const birthDateFormatted = moment.unix(birthDate).format('LL')
+    const createdAtFormatted = moment(createdAt).format('LL')
 
     return <SimpleCard>
-        <Typography className={classes.title} color="textSecondary" gutterBottom>
-        {gender}
-      </Typography>
-      <Typography variant="h5" component="h2">
+      <Typography className={classes.title} variant="title" >
         {name}
       </Typography>
-      <Typography className={classes.pos} color="textSecondary">
-        {email}
+      <Typography color="textSecondary">
+        {email || <i>Email is hidden</i>}
+      </Typography>
+      <Typography  color="textPrimary" gutterBottom>
+      Gender: {gender}
+    </Typography>
+      <Typography component="p">
+        Birthday: {birthDateFormatted}
       </Typography>
       <Typography component="p">
-        Birthday: {birthDate}
+        Joined {createdAtFormatted}
       </Typography>
-      <Typography component="p">
-        Joined Date: {createdAt}
-      </Typography>
-        </SimpleCard>
+        </SimpleCard> 
 })

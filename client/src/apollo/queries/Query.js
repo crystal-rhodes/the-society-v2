@@ -1,4 +1,3 @@
-
 import gql from 'graphql-tag'
 
 export const getUsers = gql `
@@ -45,10 +44,66 @@ export const getPosts = gql `
         title
         body
         author {
+            id
             name
         }
+        
+        comments {
+            id
+            text
+            author {
+                id
+                name
+            }
+            post {
+                author {
+                    id
+                }
+            }
+            createdAt
+        }
+
         published
         createdAt
+        }
+    }
+`
+
+export const getComments = gql `
+    query comments {
+        comments {
+            id
+            text
+            author {
+                id
+                name
+            }
+            post {
+                id
+            }
+            createdAt
+        }
+    }
+`
+export const getPost =  gql `
+    query post($id: ID!) {
+        post(id: $id) {
+            id
+            title
+            body
+            comments {
+                id
+                text
+            }
+        }
+    }
+`
+
+export const getComment =  gql `
+    query comment($id: ID!) {
+        comment(id: $id) {
+            id
+            text
         }
     }
 `

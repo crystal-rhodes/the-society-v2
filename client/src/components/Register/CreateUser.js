@@ -13,7 +13,9 @@ import {
     Redirect
 } from 'react-router-dom'
 import { getUsers } from '../../apollo/queries/Query';
-
+import {
+    AUTH_TOKEN
+} from '../../apollo/constants'
 
 class createUser extends Component {
     onSubmit = (user) => {
@@ -23,7 +25,7 @@ class createUser extends Component {
                 variables: {
                     data: {
                         name: user.firstName + ' ' + user.lastName,
-                        birthDate: moment(user.birthDate).unix(),
+                        birthDate: user.birthDate,
                         email: user.email,
                         password: user.password,
                         gender: user.gender
@@ -31,10 +33,18 @@ class createUser extends Component {
                 }, 
                 refetchQueries: [{ query: getUsers }]
             }).then((res) => {
-                console.log(res.data)
-                return <Redirect to='/'/>
+                if (res.data.createUser.token !== undefined) {
+                    this._saveUserData(res.data.createUser.token)
+                    console.log('Login successfully')
+
+                    window.location.reload() 
+                }
             })
             .catch((e) => console.log(e))
+    }
+
+    _saveUserData = token => {
+        localStorage.setItem(AUTH_TOKEN, token)
     }
 
     render() {

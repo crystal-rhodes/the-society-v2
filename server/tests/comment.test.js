@@ -21,18 +21,30 @@ test('Should delete own comment', async () => {
     expect(exists).toBe(false)
 })
 
-test('Should not delete other users comment if is not owner', async () => {
-    throw new Error('Stopped')
-
+test('Should delete other users comment if is post owner', async() => {
     const client = getClient(userTwo.jwt)
     const variables = {
         id: commentOne.comment.id
+    }
+
+    await client.mutate({mutation: deleteComment, variables})
+    const exists = await prisma.exists.Comment({id: commentOne.comment.id})
+
+    expect(exists).toBe(false)
+})
+
+test('Should not delete other users comment if is not post owner', async () => {
+    
+    const client = getClient(userTwo.jwt) 
+    const variables = {
+        id: commentTwo.comment.id
     }
 
     await expect(
         client.mutate({ mutation: deleteComment, variables })
     ).rejects.toThrow()
 })
+
 
 test('Should subscribe to comments for a post', async (done) => {
     const variables = {
@@ -57,4 +69,15 @@ test('Should subscribe to changes for published posts', async (done) => {
     })
 
     await prisma.mutation.deletePost({ where: { id: postOne.post.id } })
+})
+
+test('Should create a new comment', async() => {
+    client.getClient(userOne.jwt) 
+    const variables = {
+        data: {
+            text: "This is a testing comment"
+        }
+    }
+
+    const { data } = await client.mutate({mutation: createComment})
 })

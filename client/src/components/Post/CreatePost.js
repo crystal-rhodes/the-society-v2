@@ -1,15 +1,7 @@
 import React, {
     Component
 } from 'react'
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import {
-    withStyles
-} from '@material-ui/core/styles';
-import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
-import CreatePostForm from './CreatePostForm';
-import GET_CURRENT_USER from '../GetCurrentUser'
+import PostForm from './PostForm';
 import {
     compose,
     graphql
@@ -44,13 +36,11 @@ class CreatePost extends Component {
                 }
             },
             refetchQueries: [{ query: getPosts }]
-        }).then(res => console.log(res))
-
-
+        }).then(res => console.log(res)) 
     }
 
     render() {
-        return <CreatePostForm onSubmit={this.onSubmit}/>
+        return <PostForm onSubmit={this.onSubmit}/>
     }
 }
 

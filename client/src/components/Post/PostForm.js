@@ -14,7 +14,9 @@ import Switch from '@material-ui/core/Switch';
 import {
     FormControl
 } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
+import {
+    ContainedButton
+} from '../common/Button';
 
 const styles = theme => ({
     container: {
@@ -33,14 +35,14 @@ const styles = theme => ({
     },
 });
 
-class CreatePostForm extends Component {
+class PostForm extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            title: '',
-            body: '',
-            published: false,
+            title: props.post ? props.post.title : '',
+            body: props.post ? props.post.body : '',
+            published: props.post ? props.post.published : false,
         }
     }
 
@@ -74,10 +76,28 @@ class CreatePostForm extends Component {
             published
         } = this.state
 
-        this.props.onSubmit({
+        !this.props.post ? this.props.onSubmit({
             title,
             body,
             published
+        }) : this.props.onEditSubmit({
+            title,
+            body,
+            published
+        })
+    }
+
+    onCancel = () => {
+        this.props.onCancel({
+            isEdit: false
+        })
+    }
+
+    onClear = () => {
+        this.setState({
+            title: this.props.post ? this.props.post.title : '',
+            body: this.props.post ? this.props.post.body : '',
+            published: this.props.post ? this.props.post.published : false
         })
     }
 
@@ -86,7 +106,8 @@ class CreatePostForm extends Component {
             classes
         } = this.props
 
-        return <FormControl onSubmit={this.onSubmit}>
+        return <FormControl fullWidth={true} onSubmit={this.onSubmit}>
+        <h1>{this.props.post ? "Edit " : "Make "}Post</h1>
         <TextField
             label="Status title"
             placeholder="What are you thinking about (Optional)"
@@ -94,6 +115,8 @@ class CreatePostForm extends Component {
             margin="normal"
             variant="outlined"
             onChange={this.onTitleChanged}
+            value={this.state.title}
+            fullWidth={true}
         />
         <TextField
             label="Status"
@@ -103,22 +126,35 @@ class CreatePostForm extends Component {
             margin="normal"
             variant="outlined"
             onChange={this.onBodyChanged}
+            value={this.state.body}
+            fullWidth={true}
         />
         <FormControlLabel
             control={
             <Switch
                 checked={this.state.published}
                 onChange={this.onPublishedChanged}
-                value="published"
+                value={this.state.published}
             />
             }
             label="Published"
         />
-        <Button variant="contained" color="primary" className={classes.button} onClick={this.onSubmit}>
+        { !this.props.post ?  <ContainedButton color="primary" className={classes.button} onClick={this.onSubmit}>
             Share
-        </Button>
+        </ContainedButton> : <div>
+        <ContainedButton color="primary" className={classes.button} onClick={this.onSubmit}>
+            Save
+        </ContainedButton>     
+        <ContainedButton color="secondary" className={classes.button} onClick={this.onCancel}>
+            Cancel
+        </ContainedButton>  
+        </div>
+        }
+        <ContainedButton color="default" className={classes.button} onClick={this.onClear}>
+            { this.props.post ? "Reset" : "Clear"} 
+        </ContainedButton>     
         </FormControl>
     }
 }
 
-export default withStyles(styles)(CreatePostForm)
+export default withStyles(styles)(PostForm)

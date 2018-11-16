@@ -10,7 +10,6 @@ import Typography from '@material-ui/core/Typography';
 
 const styles = {
     card: {
-        width: 300,
         marginBottom: 12,
     },
     bullet: {

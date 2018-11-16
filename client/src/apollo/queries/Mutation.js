@@ -9,7 +9,9 @@ export const createUserMutation = gql `
             id
             name
             password
+            birthDate
         }
+        token
         }
     }
 `
@@ -74,6 +76,21 @@ export const createPostMutation = gql`
     }
 `
 
+export const createCommentMutation = gql`
+    mutation createCommentMutation($data: CreateCommentInput!) {
+  	createComment(data: $data) {
+    id
+    post {
+      id
+    }
+    author {
+      id
+    }
+    createdAt
+  }
+}
+`
+
 export const deletePostMutation = gql`
     mutation($id: ID!) {
         deletePost(
@@ -85,11 +102,24 @@ export const deletePostMutation = gql`
 `
 
 export const deleteCommentMutation = gql`
-    mutation($id: ID!) {
+    mutation deleteCommentMutation($id: ID!) {
         deleteComment(
             id: $id
         ) {
             id
+        	text
+        }
+    }
+`
+
+export const updateCommentMutation = gql`
+    mutation($id: ID!, $data: UpdateCommentInput!) {
+        updateComment(
+            id: $id,
+            data: $data
+        ){
+            id
+            text
         }
     }
 `

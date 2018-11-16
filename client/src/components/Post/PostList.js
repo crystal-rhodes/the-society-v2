@@ -1,7 +1,15 @@
-import React, { Component } from 'react'
-import { graphql } from 'react-apollo';
-import { getPosts } from '../../apollo/queries/Query';
+import React, {
+    Component
+} from 'react'
+import {
+    graphql,
+    compose
+} from 'react-apollo';
+import {
+    getPosts
+} from '../../apollo/queries/Query';
 import PostListItem from './PostListItem';
+import { updatePostList } from '../../apollo/queries/updatePost';
 
 class PostList extends Component {
     constructor(props) {
@@ -11,7 +19,8 @@ class PostList extends Component {
     renderPosts = () => {
         if (this.props.data.loading) {
             return <div>Loading Posts</div>
-        }   else {
+        } else {
+            console.log(this.props.data.posts)
             return this.props.data.posts.map((post) => <PostListItem key={post.id} post={post} />)
         }
     }
@@ -24,4 +33,8 @@ class PostList extends Component {
     }
 }
 
-export default graphql(getPosts)(PostList)
+export default compose(
+    graphql(getPosts),
+    graphql(updatePostList)
+    )
+    (PostList)

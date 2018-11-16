@@ -87,10 +87,11 @@ class LoginForm extends Component {
             />
             <TextField
             type="password"
-            value={this.state.password}
+            value="current-password"
             placeholder="password"
             className={classes.textField}
             onChange={this.onPasswordChanged}
+
             />
             <Button 
             variant="contained" 

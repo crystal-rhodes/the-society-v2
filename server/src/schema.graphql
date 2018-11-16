@@ -7,6 +7,7 @@
         comments(query: String, first: Int, skip: Int, after: String): [Comment!]!
         me: User!
         post(id: ID!): Post!
+        comment(id: ID!): Comment!
     }
 
     type Mutation {

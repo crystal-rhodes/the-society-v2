@@ -125,6 +125,30 @@ const Query = {
         }
 
         return posts[0];
+    },
+
+    async comment(parent, {
+        id
+    }, {
+        prisma,
+        request
+    }, info) {
+        const userId = getUserId(request, false);
+
+        const comments = await prisma.query.comments({
+            where: {
+                id,
+                author: {
+                    id: userId
+                }
+            }
+        }, info);
+
+        if (comments.length === 0) {
+            throw new Error('Comment not found');
+        }
+
+        return comments[0];
     }
 }
 
