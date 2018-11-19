@@ -24,6 +24,14 @@ Wait until your http://localhost:4466 (on Mac) or http://192.168.99.100:4466 (on
 prisma deploy
 ```
 
+## Getting access to PostgreSQL Database Management
+1. Run pgAdmin from desktop
+2. Create a new server
+3. Fill in all information being asked with that is provided in 
+```
+/RootDir/server/prisma/docker-compose.yml
+```
+
 ## Start the server and client
 1. In your Terminal or Command Line, change the directory to 
 
