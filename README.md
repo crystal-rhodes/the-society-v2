@@ -19,7 +19,7 @@
 ```
 docker-compose up -d
 ```
-Wait until your localhost:4466 (on Mac) or 192.168.99.100:4466 (on Windows) is up, then run the following command
+Wait until your http://localhost:4466 (on Mac) or http://192.168.99.100:4466 (on Windows) is up, then run the following command
 ```
 prisma deploy
 ```
