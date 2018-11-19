@@ -16,6 +16,7 @@ import NotFoundPage from "../components/NotFoundPage"
 import Profile from "../components/UserProfile"
 import Search from '../components/Search/Search'
 import Header from '../components/Header';
+import ForgotPassword from '../components/Post/ForgotPassword';
 
 export default () => (
     <BrowserRouter>
@@ -25,6 +26,7 @@ export default () => (
         <PublicRoute path="/" component={HomePage} exact={true} />
         <PublicRoute path="/search" component={Search} />
         <PrivateRoute path="/settings" component={Settings} exact={true} />
+        <PublicRoute path="/forgotpassword" component={ForgotPassword} exact={true} />
         <PrivateRoute path="/:name" component={Profile} exact={true} />
         <Route component={NotFoundPage} />
       </Switch>

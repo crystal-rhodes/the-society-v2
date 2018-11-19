@@ -17,13 +17,21 @@ import {
 import {
   withClientState
 } from 'apollo-link-state'
-import {
-  WebSocketLink
-} from 'apollo-link-ws'
+import { split } from 'apollo-link';
+import { HttpLink } from 'apollo-link-http';
+import { WebSocketLink } from 'apollo-link-ws';
+import { getMainDefinition } from 'apollo-utilities';
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:4000/'
 })
+
+const wsLink = new WebSocketLink({
+  uri: `ws://localhost:4000/`,
+  options: {
+    reconnect: true
+  },
+});
 
 const cache = new InMemoryCache();
 
@@ -55,10 +63,17 @@ const authLink = setContext((_, {
   }
 });
 
+const link = split(
+  // split based on operation type
+  ({ query }) => {
+    const { kind, operation } = getMainDefinition(query);
+    return kind === 'OperationDefinition' && operation === 'subscription';
+  },
+  wsLink,
+  authLink.concat(httpLink),
+);
+
 export default new ApolloClient({
-  link: ApolloLink.from([
-    stateLink,
-    authLink.concat(httpLink)
-  ]),
+  link,
   cache
 });

@@ -121,13 +121,14 @@ class PostForm extends Component {
         <TextField
             label="Status"
             placeholder="What's on your mind"
-            multiline
+            multiline={true}
             className={classes.textField}
-            margin="normal"
+            margin="dense"
             variant="outlined"
             onChange={this.onBodyChanged}
             value={this.state.body}
             fullWidth={true}
+            rows={2}
         />
         <FormControlLabel
             control={

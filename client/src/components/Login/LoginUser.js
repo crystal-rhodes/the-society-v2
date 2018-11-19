@@ -18,6 +18,15 @@ import {
 
 
 class LoginUser extends Component {
+    constructor(props) {
+        super(props)
+        
+        this.state = {
+            loginFailed: false,
+            loginAttempt: 0
+        }
+    }
+
     onSubmit = (user) => {
         this.props.mutate({
                 variables: {
@@ -28,6 +37,7 @@ class LoginUser extends Component {
                 }
             })
             .then((res) => {
+                // response includes a token to be added to localStorage
                 if (res.data.login.token !== undefined) {
                     this._saveUserData(res.data.login.token)
                     console.log('Login successfully')
@@ -35,7 +45,13 @@ class LoginUser extends Component {
                     window.location.reload()
                 }
             })
-            .catch((err) => console.log(err.message))
+            .catch((err) => {
+                console.log(err.message)
+                this.setState({
+                    loginFailed: true,
+                    loginAttempt: this.state.loginAttempt + 1
+                })
+            })
     }
 
     _saveUserData = token => {
@@ -43,7 +59,10 @@ class LoginUser extends Component {
     }
 
     render() {
-        return <LoginForm onSubmit={this.onSubmit}/>
+        return <LoginForm 
+            loginFailed={this.state.loginFailed} 
+            loginAttempt={this.state.loginAttempt}
+            onSubmit={this.onSubmit}/>
     }
 }
 

@@ -114,4 +114,4 @@ const getClient = (jwt, httpURL = 'http://localhost:4000', websocketURL = 'ws://
     })
 }
 
-export { getClient as default }
+export { getClient as default } 

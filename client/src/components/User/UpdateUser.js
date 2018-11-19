@@ -4,24 +4,29 @@ import {
 } from 'react-apollo'
 import { updateUserMutation } from '../../apollo/queries/Mutation'
 import { ContainedButton } from '../common/Button'
-import { AUTH_TOKEN } from '../../apollo/constants'
-import { Redirect } from 'react-router-dom';
-import { OutlinedTextField } from '../common/TextField';
+import UpdateUserForm from './UpdateUserForm';
 
 class UpdateUser extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            isUpdate: false
+        }
+    }
+
     onUpdateAccountClicked = () => {
-        
+        this.setState({isUpdate: true})
     }
     
     render() {
-        return <form>
-            <OutlinedTextField
-                defaultValue="asdfasdfasdf"
-            />
+        return <div>
+            <h2>General Settings</h2>
+            <UpdateUserForm/>
+
             <ContainedButton color="primary" onClick={this.onUpdateAccountClicked}>
                 <h1>Update Account</h1>
             </ContainedButton>
-        </form>
+        </div>
     }
 }
 

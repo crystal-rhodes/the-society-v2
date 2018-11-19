@@ -11,6 +11,7 @@ import Button from '@material-ui/core/Button';
 import {
     FormControl
 } from '@material-ui/core';
+import { Link } from 'react-router-dom'
 
 
 const styles = theme => ({
@@ -77,29 +78,33 @@ class LoginForm extends Component {
         const { classes } = this.props;
 
         return <form className={classes.container}>
+            {this.props.loginFailed ? <h5>Login failed!</h5> : '' }
+            {this.props.loginAttempt > 5 ? <h5>Login failed more than 5 times!</h5> : '' }
+
             <h3>Login</h3>
             <TextField
-            type="email"
-            value={this.state.email}
-            placeholder="email"
-            className={classes.textField}
-            onChange={this.onEmailChanged}
+                type="email"
+                value={this.state.email}
+                placeholder="email"
+                className={classes.textField}
+                onChange={this.onEmailChanged}
             />
             <TextField
-            type="password"
-            value="current-password"
-            placeholder="password"
-            className={classes.textField}
-            onChange={this.onPasswordChanged}
-
+                type="password"
+                value="current-password"
+                placeholder="password"
+                className={classes.textField}
+                onChange={this.onPasswordChanged}
             />
             <Button 
-            variant="contained" 
-            color="primary" 
-            className={classes.button} 
-            onClick={this.onSubmit}>
-            Log In
-          </Button>
+                variant="contained" 
+                color="primary" 
+                className={classes.button} 
+                onClick={this.onSubmit}>
+                Log In
+            </Button>
+            <Link to="/forgotpassword">Forgot password?</Link>
+        
         </form>
     }
 }

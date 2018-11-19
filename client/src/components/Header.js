@@ -10,12 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import MoreIcon from '@material-ui/icons/MoreVert';
+
 import {
     AUTH_TOKEN
 } from '../apollo/constants'
@@ -26,6 +21,24 @@ import { compose, graphql } from 'react-apollo';
 import {
     getMe
 } from '../apollo/queries/Query'
+import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/Drawer';
+
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import MenuIcon from '@material-ui/icons/Menu';
+import SearchIcon from '@material-ui/icons/Search';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import MailIcon from '@material-ui/icons/Mail';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import MoreIcon from '@material-ui/icons/MoreVert';
+import { HomeIcon } from '../assets/svgIcons';
+import HeaderDrawer from './HeaderDrawer';
 
 const styles = theme => ({
   root: {
@@ -102,6 +115,7 @@ class PrimarySearchAppBar extends React.Component {
     anchorEl: null,
     mobileMoreAnchorEl: null,
     auth: !!localStorage.getItem(AUTH_TOKEN),
+    showSidebar: false
   };
 
   handleProfileMenuOpen = event => {
@@ -145,9 +159,15 @@ class PrimarySearchAppBar extends React.Component {
     }
   }
 
+  showSidebar = () => {
+    this.setState({
+      showSidebar: !this.state.showSidebar
+    })
+  }
+
   render() {
     const { anchorEl, mobileMoreAnchorEl } = this.state;
-    const { classes } = this.props;
+    const { classes, theme } = this.props;
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -203,13 +223,17 @@ class PrimarySearchAppBar extends React.Component {
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar>
-            <IconButton className={classes.menuButton} color="inherit" aria-label="Open drawer">
+            <IconButton 
+                className={classes.menuButton} 
+                color="inherit" 
+                aria-label="Open drawer"
+                onClick={this.showSidebar}>
               <MenuIcon />
             </IconButton>
             <Typography className={classes.title} variant="h6" color="inherit" noWrap>
               <NavLink to="/">The Society</NavLink>
             </Typography>
-            <div className={classes.search}>
+            {this.state.auth === true && <div className={classes.search}>
               <div className={classes.searchIcon}>
                 <SearchIcon />
               </div>
@@ -220,9 +244,9 @@ class PrimarySearchAppBar extends React.Component {
                   input: classes.inputInput,
                 }}
               />
-            </div>
+            </div>}
             <div className={classes.grow} />
-            <div className={classes.sectionDesktop}>
+            {this.state.auth === true && <div className={classes.sectionDesktop}>
               <IconButton color="inherit">
                 <Badge badgeContent={4} color="secondary">
                   <MailIcon />
@@ -239,18 +263,22 @@ class PrimarySearchAppBar extends React.Component {
                 onClick={this.handleProfileMenuOpen}
                 color="inherit"
               >
-                <AccountCircle />
+              <AccountCircle />
               </IconButton>
-            </div>
-            <div className={classes.sectionMobile}>
+            </div>}
+            {this.state.auth === true && <div className={classes.sectionMobile}>
               <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
                 <MoreIcon />
               </IconButton>
-            </div>
+            </div>}
           </Toolbar>
         </AppBar>
-        {renderMenu}
-        {renderMobileMenu}
+
+        <HeaderDrawer open={this.state.showSidebar} showSidebar={this.showSidebar}/>
+
+        {this.state.auth === true && renderMenu}
+        
+        {this.state.auth === true && renderMobileMenu}
       </div>
     );
   }
@@ -258,6 +286,10 @@ class PrimarySearchAppBar extends React.Component {
 
 PrimarySearchAppBar.propTypes = {
   classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
 };
 
-export default compose(graphql(getMe), withStyles(styles))(PrimarySearchAppBar);
+export default compose(
+      graphql(getMe), 
+    withStyles(styles, {withTheme: true}))
+(PrimarySearchAppBar);

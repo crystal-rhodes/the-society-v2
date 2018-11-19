@@ -10,7 +10,8 @@ import {
 } from '@material-ui/core/styles';
 import {
     graphql,
-    compose
+    compose,
+    Subscription
 } from 'react-apollo';
 import CardActions from '@material-ui/core/CardActions';
 import CommentList from '../Comment/CommentList';
@@ -28,6 +29,7 @@ import {
 } from '../../apollo/queries/Query';
 import moment from 'moment';
 import PostForm from './PostForm';
+import { subscribeToComments } from '../../apollo/queries/Subscription'
 
 const styles = {
     title: {
@@ -43,7 +45,8 @@ class PostListItem extends Component {
         super(props)
 
         this.state = {
-            isEdit: false
+            isEdit: false,
+            isSubscribed: false
         }
     }
 
@@ -105,6 +108,41 @@ class PostListItem extends Component {
         })
     }
 
+    SubscribeToComments = () => (
+        <Subscription
+            subscription={subscribeToComments}
+            variables={{ postId: this.props.post.id }}
+        >
+        {({ data, loading }) => {
+
+        }}
+        </Subscription>
+    )
+
+    onSubscribe = () => {
+
+        if (!this.state.isSubscribed) {
+            this.unsubscribe = this.props.subscribe({
+                document: subscribeToComments,
+                variables: {
+                    postId: this.props.post.id
+                },
+                updateQuery: (prev, { subscriptionData }) => {
+                    if (!subscriptionData.data) return prev;
+                    console.log(subscriptionData.data)
+                },
+                onError: (err) => console.log(err)
+            })
+        } else {
+            this.unsubscribe()
+        }
+
+        this.setState({
+            ...this.state,
+            isSubscribed: !this.state.isSubscribed
+        })
+    }
+
     render() {
 
         const {
@@ -123,12 +161,12 @@ class PostListItem extends Component {
 
         const createdAtFormatted = moment(createdAt).startOf('hour').fromNow()
 
-        return (!this.state.isEdit) ? <SimpleCard>
+        return <div>{(!this.state.isEdit) ? <SimpleCard>
                     <Typography className={classes.title} color="textSecondary" gutterBottom>
                         {title}
                     </Typography>
 
-                    <Typography variant="h5" component="h2">
+                    <Typography paragraph>
                         {body}
                     </Typography>
 
@@ -140,7 +178,12 @@ class PostListItem extends Component {
                         Posted {createdAtFormatted}
                     </Typography>
                     
-                    <CommentList postId={id} comments={comments}/>
+                    {
+                        comments.length > 0 ?
+                        (comments.length > 1 ? 
+                        `${comments.length} Comments` : 
+                        `${comments.length} Comment`) : ''
+                    }
 
                     <CardActions>
                         
@@ -154,12 +197,20 @@ class PostListItem extends Component {
                         Delete
                     </ContainedButton> }
 
+                    <ContainedButton size="large" color="default" onClick={this.onSubscribe}>
+                        {!this.state.isSubscribed ? "Turn On Notifications" : "Turn Off Notifications"} 
+                    </ContainedButton> 
+
                     </CardActions>
         </SimpleCard> : <PostForm 
-                            onCancel={this.onCancel} 
-                            onEditSubmit={this.onEditSubmit} 
-                            post={this.props.post}
-                        />
+                    onCancel={this.onCancel} 
+                    onEditSubmit={this.onEditSubmit} 
+                    post={this.props.post}
+                />}
+                    <CommentList postId={id} comments={comments}/>
+                    </div>
+
+
     }
 }
 
